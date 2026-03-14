@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DORA - Smart Department Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo-section">
+            <div class="bot-icon">🤖</div>
+            <div class="logo-text">
+                <h1>DORA</h1>
+                <p>Your Smart<br>Department Assistant</p>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="faq.html">FAQs</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="hero-banner">
+        <img src="https://ycceresearchportal.org/wp-content/uploads/slider/cache/f053dba243786e8ab20e7914e428f64a/maxresdefault.jpg" alt="Campus Banner">
+    </div>
+
+    <main class="main-container">
+        <div class="welcome-header">
+            <h2>Welcome to DORA!</h2>
+            <p>Your Departmental Online Response Assistant for <strong>Academic Assistance</strong></p>
+        </div>
+
+        <div class="layout-grid">
+            <aside class="sidebar">
+                <div class="quick-links-container">
+                    <h3>Quick Links</h3>
+                    <ul class="quick-links">
+                        <li><a href="course-info.html" class="quick-link-btn">Course Info</a></li>
+                        <li><a href="faculty-contacts.html" class="quick-link-btn">Faculty Info</a></li>
+                        <li><a href="exam-schedule.html" class="quick-link-btn">Exam Schedule</a></li>
+                        <li><a href="latest-events.html" class="quick-link-btn">Events</a></li>
+                        <li><a href="notices.html" class="quick-link-btn">Notices</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-info">
+                    <h3>INFO</h3>
+                    <hr>
+                </div>
+            </aside>
+
+            <section class="chat-interface">
+                <div class="chat-window" id="chat-window">
+                    
+                    <div class="message-row user-row">
+                        <span class="sender-name">You</span>
+                        <div class="bubble user-bubble">What courses are available for this semester?</div>
+                    </div>
+
+                    <div class="message-row bot-row">
+                        <div class="bot-avatar">🤖</div>
+                        <div class="bubble bot-bubble">
+                            Hello! I'm DORA, your smart chatbot assistant.<br>How can I assist you today?
+                        </div>
+                    </div>
+
+                    <div class="message-row bot-row no-avatar">
+                        <div class="bubble bot-bubble">
+                            Here are courses available for this semester:
+                            <ul class="course-list">
+                                <li>Computer Science 101</li>
+                                <li>Data Structures</li>
+                                <li>Artificial Intelligence</li>
+                                <li>Digital Marketing</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Type your message...">
+                    <button id="send-btn">Send</button>
+                </div>
+            </section>
+        </div>
+
+        <div class="bottom-features">
+            <a href="academic-details.html" class="feature-link">
+                <div class="feature-item">
+                    <div class="icon-circle">🎓</div>
+                    <span>Academic Details</span>
+                </div>
+            </a>
+            <a href="faculty-contacts.html" class="feature-link">
+                <div class="feature-item">
+                    <div class="icon-circle">👨‍🏫</div>
+                    <span>Faculty Contacts</span>
+                </div>
+            </a>
+            <a href="latest-events.html" class="feature-link">
+                <div class="feature-item">
+                    <div class="icon-circle">📅</div>
+                    <span>Latest Events</span>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

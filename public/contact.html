@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Department</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo-section">
+            <div class="bot-icon">🤖</div>
+            <div class="logo-text">
+                <h1>DORA</h1>
+                <p>Your Smart<br>Department Assistant</p>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="faq.html">FAQs</a>
+            <a href="contact.html" class="active">Contact</a>
+        </nav>
+    </header>
+
+    <main class="main-container page-content">
+        <h2>Contact Administration</h2>
+        <hr class="title-divider">
+
+        <div class="contact-layout">
+            <div class="contact-info">
+                <h3>Department Office</h3>
+                <p><strong>Location:</strong> Administrative Building, Room 405</p>
+                <p><strong>Hours:</strong> Mon-Fri, 9:00 AM - 5:00 PM</p>
+                <p><strong>Email:</strong> admin@cse.edu</p>
+                <p><strong>Phone:</strong> +91 8767220943</p>
+            </div>
+
+            <form class="contact-form" onsubmit="event.preventDefault(); alert('Message sent successfully!'); this.reset();">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required placeholder="Sam Smith">
+                </div>
+                <div class="form-group">
+                    <label for="email">Student Email</label>
+                    <input type="email" id="email" required placeholder="samsmith@student.edu">
+                </div>
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" rows="5" required placeholder="How can we help you?"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
