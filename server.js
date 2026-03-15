@@ -1,62 +1,82 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { NlpManager } = require('node-nlp'); // Importing the real NLP library!
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // Allows the server to parse JSON bodies
-
-// Serve static frontend files from the 'public' directory
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- CHATBOT LOGIC (Simulated NLU) ---
-// This function acts as the "intent recognition" and "response generation"
-function getBotResponse(message) {
-    // Normalize the input to lowercase for easier matching
-    const lowerMsg = message.toLowerCase();
+// --- 1. INITIALIZE NLP ENGINE ---
+// ForceNER helps extract entities (like names or dates)
+const manager = new NlpManager({ languages: ['en'], forceNER: true });
 
-    // Keyword matching logic
-    if (lowerMsg.includes('course') || lowerMsg.includes('subject') || lowerMsg.includes('class')) {
-        return "We offer several courses this semester including CS 101, Data Structures (CS 201), and Web Application Development (CS 305). You can click the 'Course Info' quick link for full details!";
-    } 
-    else if (lowerMsg.includes('faculty') || lowerMsg.includes('professor') || lowerMsg.includes('teacher')) {
-        return "Our department is headed by Dr. Alan Turing. Other key faculty include Dr. Ada Lovelace and Prof. Tim Berners-Lee. Check the 'Faculty Info' page for their office hours and emails.";
-    } 
-    else if (lowerMsg.includes('exam') || lowerMsg.includes('schedule') || lowerMsg.includes('date')) {
-        return "Mid-term exams for Fall 2026 start on October 20. Please check the 'Exam Schedule' link on the left for the full room and time timetable.";
-    } 
-    else if (lowerMsg.includes('event') || lowerMsg.includes('workshop') || lowerMsg.includes('symposium')) {
-        return "We have the Annual Tech Symposium coming up on April 15, and a Web Dev Workshop on April 22. Check the 'Events' tab for locations!";
-    }
-    else if (lowerMsg.includes('hi') || lowerMsg.includes('hello') || lowerMsg.includes('hey')) {
-        return "Hello there! I'm DORA, your smart department assistant. How can I help you today?";
-    } 
-    else if (lowerMsg.includes('thank')) {
-        return "You're very welcome! Let me know if you need anything else.";
-    }
-    else {
-        // Fallback response if intent is not recognized
-        return "I'm still learning! Could you please rephrase your question? Alternatively, you can check our FAQs or use the Contact page to reach the administration directly.";
-    }
-}
+// --- 2. TRAIN THE NLP MODEL (Machine Learning) ---
+// We group different ways a user might ask a question into an "Intent"
+
+// Intent: Ask about Courses
+manager.addDocument('en', 'What courses are available?', 'academic.courses');
+manager.addDocument('en', 'Tell me about the subjects', 'academic.courses');
+manager.addDocument('en', 'Which classes can I take this semester?', 'academic.courses');
+manager.addDocument('en', 'I need info on CS subjects', 'academic.courses');
+
+// Intent: Ask about Faculty
+manager.addDocument('en', 'Who are the professors?', 'staff.faculty');
+manager.addDocument('en', 'Tell me about the faculty', 'staff.faculty');
+manager.addDocument('en', 'Who is the head of department?', 'staff.faculty');
+manager.addDocument('en', 'I need to speak to a teacher', 'staff.faculty');
+
+// Intent: Ask about Exams
+manager.addDocument('en', 'When are the exams?', 'academic.exams');
+manager.addDocument('en', 'Show me the exam schedule', 'academic.exams');
+manager.addDocument('en', 'mid-term dates', 'academic.exams');
+manager.addDocument('en', 'When is my test?', 'academic.exams');
+
+// Intent: Greetings
+manager.addDocument('en', 'Hello', 'greetings.hello');
+manager.addDocument('en', 'Hi DORA', 'greetings.hello');
+manager.addDocument('en', 'Hey there', 'greetings.hello');
+manager.addDocument('en', 'Good morning', 'greetings.hello');
+
+// --- 3. DEFINE THE RESPONSES ---
+// We tell the bot how to reply when it detects a specific Intent
+manager.addAnswer('en', 'academic.courses', 'We offer several courses this semester including CS 101, Data Structures (CS 201), and Web Application Development (CS 305). Click the "Course Info" link on the left for details!');
+manager.addAnswer('en', 'staff.faculty', 'Our department is headed by Dr. Alan Turing. Other key faculty include Dr. Ada Lovelace and Prof. Tim Berners-Lee. Check the "Faculty Info" page for their contact details.');
+manager.addAnswer('en', 'academic.exams', 'Mid-term exams for Fall 2026 start on October 20. Please check the "Exam Schedule" link for the full room and time timetable.');
+manager.addAnswer('en', 'greetings.hello', 'Hello there! I\'m DORA, your smart department assistant. How can I help you with your academic queries today?');
+
+// --- 4. TRAIN AND SAVE THE MODEL ---
+// This runs automatically when you start the server
+(async () => {
+    await manager.train();
+    manager.save();
+    console.log('🤖 DORA NLP Model trained successfully!');
+})();
 
 // --- API ENDPOINTS ---
-
-// POST endpoint to handle chat messages
-app.post('/api/chat', (req, res) => {
+app.post('/api/chat', async (req, res) => {
     const userMessage = req.body.message;
     
     if (!userMessage) {
         return res.status(400).json({ error: "Message is required" });
     }
 
-    // Get the response from our logic engine
-    const botReply = getBotResponse(userMessage);
+    // Process the raw text through the Neural Network to find the Intent
+    const response = await manager.process('en', userMessage);
 
-    // Add a slight artificial delay (500ms) to make it feel like the bot is "typing"
+    // Get the answer assigned to the detected intent
+    let botReply = response.answer;
+
+    // Fallback if the bot doesn't understand (confidence is too low)
+    if (!botReply) {
+        botReply = "I'm still learning! Could you please rephrase your question? Alternatively, you can check our FAQs or use the Contact page.";
+    }
+
+    // Add a slight artificial delay (500ms) to simulate typing
     setTimeout(() => {
         res.json({ reply: botReply });
     }, 500);
@@ -64,6 +84,5 @@ app.post('/api/chat', (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`DORA Backend running successfully!`);
-    console.log(`Access the application at: http://localhost:${PORT}`);
+    console.log(`DORA Backend running successfully! Access at: http://localhost:${PORT}`);
 });
